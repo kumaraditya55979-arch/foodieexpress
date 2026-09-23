@@ -17,7 +17,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "com.foodieexpress.delivery"
+    namespace ""
     compileSdkVersion 33
 
     compileOptions {
@@ -30,7 +30,7 @@ android {
     sourceSets { main.java.srcDirs += 'src/main/kotlin' }
 
     defaultConfig {
-        applicationId "com.foodieexpress.delivery"
+        applicationId ""
         minSdkVersion 21
         targetSdkVersion 33
         versionCode 1
