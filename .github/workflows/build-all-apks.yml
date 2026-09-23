@@ -31,7 +31,7 @@ jobs:
           storeFile=keystore.jks
           PROPS
       - name: Build Customer APK
-        run: cd customer_app && flutter pub get && flutter build apk --release --no-tree-shake-icons
+        run: export FLUTTER_ROOT=$(flutter --version 2>/dev/null | head -1); cd customer_app && flutter pub get && flutter build apk --release --no-tree-shake-icons
       - uses: actions/upload-artifact@v4
         with:
           name: 1-Customer-App-Signed
