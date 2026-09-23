@@ -1,4 +1,4 @@
-name: Build & Sign All 3 APKs
+name: Build & Sign All APKs
 
 on:
   push:
@@ -6,123 +6,96 @@ on:
   workflow_dispatch:
 
 jobs:
-  # ─── CUSTOMER APP ────────────────────────────────────────────────────────────
   build-customer:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-java@v4
         with:
+          distribution: 'zulu'
           java-version: '17'
-          distribution: 'temurin'
-
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'
+          flutter-version: '3.19.6'
           channel: 'stable'
-
       - name: Write google-services.json
         run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > customer_app/android/app/google-services.json
-
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > customer_app/android/app/keystore.jks
-
       - name: Write key.properties
         run: |
-          cat > customer_app/android/key.properties <<EOF
+          cat > customer_app/android/key.properties << PROPS
           storePassword=${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword=${{ secrets.KEY_PASSWORD }}
           keyAlias=${{ secrets.KEY_ALIAS }}
           storeFile=keystore.jks
-          EOF
-
+          PROPS
       - name: Build Customer APK
-        working-directory: customer_app
-        run: flutter pub get && flutter build apk --release
-
+        run: cd customer_app && flutter pub get && flutter build apk --release --no-tree-shake-icons
       - uses: actions/upload-artifact@v4
         with:
           name: 1-Customer-App-Signed
           path: customer_app/build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
 
-  # ─── DELIVERY BOY APP ────────────────────────────────────────────────────────
   build-delivery:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-java@v4
         with:
+          distribution: 'zulu'
           java-version: '17'
-          distribution: 'temurin'
-
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'
+          flutter-version: '3.19.6'
           channel: 'stable'
-
       - name: Write google-services.json
         run: echo '${{ secrets.GOOGLE_SERVICES_JSON_DELIVERY }}' > delivery_app/android/app/google-services.json
-
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > delivery_app/android/app/keystore.jks
-
       - name: Write key.properties
         run: |
-          cat > delivery_app/android/key.properties <<EOF
+          cat > delivery_app/android/key.properties << PROPS
           storePassword=${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword=${{ secrets.KEY_PASSWORD }}
           keyAlias=${{ secrets.KEY_ALIAS }}
           storeFile=keystore.jks
-          EOF
-
+          PROPS
       - name: Build Delivery APK
-        working-directory: delivery_app
-        run: flutter pub get && flutter build apk --release
-
+        run: cd delivery_app && flutter pub get && flutter build apk --release --no-tree-shake-icons
       - uses: actions/upload-artifact@v4
         with:
-          name: 2-Delivery-Boy-App-Signed
+          name: 2-Delivery-App-Signed
           path: delivery_app/build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
 
-  # ─── ADMIN APP ───────────────────────────────────────────────────────────────
   build-admin:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-java@v4
         with:
+          distribution: 'zulu'
           java-version: '17'
-          distribution: 'temurin'
-
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'
+          flutter-version: '3.19.6'
           channel: 'stable'
-
       - name: Write google-services.json
         run: echo '${{ secrets.GOOGLE_SERVICES_JSON_ADMIN }}' > admin_app/android/app/google-services.json
-
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > admin_app/android/app/keystore.jks
-
       - name: Write key.properties
         run: |
-          cat > admin_app/android/key.properties <<EOF
+          cat > admin_app/android/key.properties << PROPS
           storePassword=${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword=${{ secrets.KEY_PASSWORD }}
           keyAlias=${{ secrets.KEY_ALIAS }}
           storeFile=keystore.jks
-          EOF
-
+          PROPS
       - name: Build Admin APK
-        working-directory: admin_app
-        run: flutter pub get && flutter build apk --release
-
+        run: cd admin_app && flutter pub get && flutter build apk --release --no-tree-shake-icons
       - uses: actions/upload-artifact@v4
         with:
           name: 3-Admin-App-Signed
