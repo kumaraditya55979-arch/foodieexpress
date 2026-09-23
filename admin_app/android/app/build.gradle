@@ -1,16 +1,54 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader -> localProperties.load(reader) }
+}
+
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
-if (keystorePropertiesFile.exists()) { keystorePropertiesFile.withReader('UTF-8') { reader -> keystoreProperties.load(reader) } }
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services'
-android {
-    namespace 'com.foodieexpress.admin'
-    compileSdk 34
-    defaultConfig { applicationId 'com.foodieexpress.admin'; minSdk 21; targetSdk 34; versionCode 1; versionName "1.0.0" }
-    signingConfigs { release { keyAlias keystoreProperties['keyAlias']; keyPassword keystoreProperties['keyPassword']; storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null; storePassword keystoreProperties['storePassword'] } }
-    buildTypes { release { signingConfig signingConfigs.release; minifyEnabled false } }
-    compileOptions { sourceCompatibility JavaVersion.VERSION_1_8; targetCompatibility JavaVersion.VERSION_1_8 }
-    kotlinOptions { jvmTarget = '1.8' }
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.withReader('UTF-8') { reader -> keystoreProperties.load(reader) }
 }
+
+android {
+    namespace "com.foodieexpress.admin"
+    compileSdkVersion 33
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions { jvmTarget = '1.8' }
+
+    sourceSets { main.java.srcDirs += 'src/main/kotlin' }
+
+    defaultConfig {
+        applicationId "com.foodieexpress.admin"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    buildTypes {
+        release { signingConfig signingConfigs.release }
+    }
+}
+
 flutter { source '../..' }
