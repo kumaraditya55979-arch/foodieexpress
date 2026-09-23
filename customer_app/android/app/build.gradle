@@ -12,20 +12,15 @@ if (keystorePropertiesFile.exists()) {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion 33
-    ndkVersion flutter.ndkVersion
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     kotlinOptions { jvmTarget = '1.8' }
     sourceSets { main.java.srcDirs += 'src/main/kotlin' }
-
     defaultConfig {
         applicationId ""
         minSdkVersion 21
@@ -33,7 +28,6 @@ android {
         versionCode 1
         versionName "1.0.0"
     }
-
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
@@ -42,10 +36,11 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-
     buildTypes {
         release { signingConfig signingConfigs.release }
     }
 }
 
-flutter { source '../..' }
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0"
+}
